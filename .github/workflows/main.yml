@@ -38,6 +38,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+    - uses: Azure/aks-set-context@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        cluster-name: production
+        resource-group: ArcticRiskPlatform
+    - uses: Azure/k8s-create-secret@v1
+      with:
+        container-registry-url: contoso.azurecr.io
+        container-registry-username: ${{ secrets.ACR_USERNAME }}
+        container-registry-password: ${{ secrets.ACR_PASSWORD }}
+        secret-name: arctic-pull-secret
     - name: Deploy to Kubernetes cluster
       uses: Azure/k8s-deploy@v1
       with:
@@ -48,7 +59,7 @@ jobs:
         # Fully qualified resource URL of the image(s) to be used for substitutions on the manifest files Example: contosodemo.azurecr.io/helloworld:test
         images: arcticriskregistry.azurecr.io/arctictest:${{ github.sha }}
         # Name of a docker-registry secret that has already been set up within the cluster. Each of these secret names are added under imagePullSecrets field for the workloads found in the input manifest files
-#         imagepullsecrets: # optional
+        imagepullsecrets: arctic-pull-secret
         # Percentage of traffic redirect to canary deployment
         # Arguments
 #         args: # optional
