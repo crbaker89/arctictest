@@ -17,7 +17,7 @@ az login
 az aks install-cli
 ````
 
-###### onnect the kubectl cli
+###### Connect the kubectl cli
 
 ````bash
 az aks get-credentials --resource-group ArcticRiskPlatform --name production
