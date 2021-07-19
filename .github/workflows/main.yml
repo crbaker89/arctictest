@@ -35,3 +35,22 @@ jobs:
       - run: |
           docker build . -t arcticriskregistry.azurecr.io/arctictest:${{ github.sha }}
           docker push arcticriskregistry.azurecr.io/arctictest:${{ github.sha }}
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Kubernetes cluster
+      uses: Azure/k8s-deploy@v1
+      with:
+        # Choose the target Kubernetes namespace. If the namespace is not provided, the commands will run in the default namespace.
+        namespace: bla
+        # Path to the manifest files which will be used for deployment.
+        manifests: k8s/dev.yml
+        # Fully qualified resource URL of the image(s) to be used for substitutions on the manifest files Example: contosodemo.azurecr.io/helloworld:test
+        images: arcticriskregistry.azurecr.io/arctictest:${{ github.sha }}
+        # Name of a docker-registry secret that has already been set up within the cluster. Each of these secret names are added under imagePullSecrets field for the workloads found in the input manifest files
+#         imagepullsecrets: # optional
+        # Percentage of traffic redirect to canary deployment
+        # Arguments
+#         args: # optional
+        # deploy/promote/reject
+        action: deploy
