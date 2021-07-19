@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: develop
+  name: arctic-test
+spec:
+  selector:
+    matchLabels:
+      app: arctic-test
+  template:
+    metadata:
+      labels:
+        app: arctic-test
+    spec:
+      containers:
+        - name: arctic-test
+          image: arcticriskregistry.azurecr.io/arctictest:${{ github.sha }}
+          imagePullPolicy: Always
